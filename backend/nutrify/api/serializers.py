@@ -4,10 +4,10 @@ from rest_framework import serializers
 
 from .models import (
     Category,
-    DietaryRestriction,
     Establishment,
     Favorite,
     Product,
+    RestriccionDieta,
     UserProfile,
 )
 
@@ -15,8 +15,11 @@ User = get_user_model()
 
 
 class DietaryRestrictionSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="nombre")
+    description = serializers.CharField(source="descripcion")
+
     class Meta:
-        model = DietaryRestriction
+        model = RestriccionDieta
         fields = ["id", "name", "slug", "description"]
 
 
@@ -29,6 +32,12 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     declared_compatible_with = DietaryRestrictionSerializer(many=True, read_only=True)
+    description = serializers.CharField(source="descripcion")
+    ingredients = serializers.CharField(source="ingredientes")
+    allergens = serializers.CharField(source="alergias")
+    cross_contamination_info = serializers.CharField(
+        source="contaminacion_cruzada_info"
+    )
 
     class Meta:
         model = Product
@@ -79,7 +88,7 @@ class EstablishmentSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     restrictions = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=DietaryRestriction.objects.all(), required=False
+        many=True, queryset=RestriccionDieta.objects.all(), required=False
     )
 
     class Meta:
@@ -163,7 +172,7 @@ class SearchParamsSerializer(serializers.Serializer):
         if "restrictions" in attrs:
             requested = set(attrs["restrictions"])
             found = set(
-                DietaryRestriction.objects.filter(slug__in=requested).values_list(
+                RestriccionDieta.objects.filter(slug__in=requested).values_list(
                     "slug", flat=True
                 )
             )
@@ -172,4 +181,3 @@ class SearchParamsSerializer(serializers.Serializer):
                     {"restrictions": "Una o más restricciones no existen."}
                 )
         return attrs
-

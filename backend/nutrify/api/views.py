@@ -12,10 +12,10 @@ from rest_framework.decorators import action
 
 from .models import (
     Category,
-    DietaryRestriction,
     Establishment,
     Favorite,
     Product,
+    RestriccionDieta,
     UserProfile,
 )
 from .serializers import (
@@ -60,7 +60,7 @@ class CurrentProfileView(generics.RetrieveUpdateAPIView):
 
 
 class DietaryRestrictionViewSet(ReadOnlyModelViewSet):
-    queryset = DietaryRestriction.objects.all()
+    queryset = RestriccionDieta.objects.all()
     serializer_class = DietaryRestrictionSerializer
 
 

@@ -1,12 +1,19 @@
 from django.contrib import admin
 
-from .models import Category, DietaryRestriction, Establishment, Favorite, Product, UserProfile
+from .models import (
+    Category,
+    Establishment,
+    Favorite,
+    Product,
+    RestriccionDieta,
+    UserProfile,
+)
 
 
-@admin.register(DietaryRestriction)
-class DietaryRestrictionAdmin(admin.ModelAdmin):
-    list_display = ["name", "slug"]
-    prepopulated_fields = {"slug": ["name"]}
+@admin.register(RestriccionDieta)
+class RestriccionDietaAdmin(admin.ModelAdmin):
+    list_display = ["nombre", "slug"]
+    prepopulated_fields = {"slug": ["nombre"]}
 
 
 @admin.register(Category)
@@ -40,4 +47,3 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(UserProfile)
 admin.site.register(Favorite)
-

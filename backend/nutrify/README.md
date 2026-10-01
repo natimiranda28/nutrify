@@ -12,8 +12,9 @@ establecimiento**: no certifica que un producto sea médicamente seguro.
 
 ## Opción recomendada: Visual Studio Code + Docker
 
-1. Abre la carpeta `nutrify` en VS Code.
-2. En la terminal integrada, ejecuta `docker compose up --build`.
+1. Abre la raíz del repositorio `nutrify` en VS Code.
+2. En la terminal integrada, ejecuta `cd backend/nutrify` y luego
+   `docker compose up --build`.
 3. Cuando termine de iniciar, abre `http://localhost:8000/api/` o
    `http://localhost:8000/admin/`.
 4. Para detener los servicios, usa `Ctrl+C` y luego `docker compose down`.
@@ -23,9 +24,10 @@ y contraseñas antes de cualquier despliegue.
 
 ## Opción local: SQLite
 
-En una terminal de VS Code, desde la raíz del proyecto:
+En una terminal de VS Code, desde la raíz del repositorio:
 
 ```bash
+cd backend/nutrify
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt

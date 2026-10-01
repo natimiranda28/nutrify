@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import Q
 
 
-class restriccion_dietas(models.Model):
+class RestriccionDieta(models.Model):
     nombre = models.CharField(max_length=80, unique=True)
     slug = models.SlugField(max_length=90, unique=True)
     descripcion = models.TextField(blank=True)
@@ -21,7 +21,7 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
     )
     restrictions = models.ManyToManyField(
-        restriccion_dietas, blank=True, related_name="profiles"
+        RestriccionDieta, blank=True, related_name="profiles"
     )
 
     def __str__(self):
@@ -94,7 +94,7 @@ class Product(models.Model):
     alergias = models.TextField(blank=True)
     contaminacion_cruzada_info = models.TextField(blank=True)
     declared_compatible_with = models.ManyToManyField(
-        restriccion_dietas, blank=True, related_name="declared_compatible_products"
+        RestriccionDieta, blank=True, related_name="declared_compatible_products"
     )
     is_active = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -122,4 +122,3 @@ class Favorite(models.Model):
                 fields=["user", "establishment"], name="unique_user_favorite"
             )
         ]
-

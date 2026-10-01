@@ -3,16 +3,16 @@ from rest_framework.test import APITestCase
 
 from django.contrib.auth import get_user_model
 
-from .models import Category, DietaryRestriction, Establishment, Product
+from .models import Category, Establishment, Product, RestriccionDieta
 
 
 class ApiTests(APITestCase):
     def setUp(self):
-        self.celiac = DietaryRestriction.objects.create(
-            name="Celíaca", slug="celiaquia"
+        self.celiac = RestriccionDieta.objects.create(
+            nombre="Celíaca", slug="celiaquia", descripcion="Evitar gluten."
         )
-        self.diabetes = DietaryRestriction.objects.create(
-            name="Diabetes", slug="diabetes"
+        self.diabetes = RestriccionDieta.objects.create(
+            nombre="Diabetes", slug="diabetes", descripcion="Controlar azúcares."
         )
         self.ice_cream = Category.objects.create(name="Helado", slug="helado")
         self.pizzeria = Category.objects.create(name="Pizza", slug="pizza")
@@ -27,6 +27,10 @@ class ApiTests(APITestCase):
             establishment=self.place,
             category=self.ice_cream,
             name="Chocolate sin azúcar agregada",
+            descripcion="Helado de chocolate.",
+            ingredientes="Cacao, leche.",
+            alergias="Leche.",
+            contaminacion_cruzada_info="Puede contener trazas de frutos secos.",
         )
         self.product.declared_compatible_with.add(self.diabetes)
 
@@ -40,6 +44,24 @@ class ApiTests(APITestCase):
         result = response.data["results"][0]
         self.assertEqual(result["slug"], "heladeria-roma")
         self.assertEqual(result["products"][0]["name"], "Chocolate sin azúcar agregada")
+        self.assertEqual(
+            result["products"][0]["description"], "Helado de chocolate."
+        )
+        self.assertEqual(result["products"][0]["ingredients"], "Cacao, leche.")
+        self.assertEqual(result["products"][0]["allergens"], "Leche.")
+        self.assertEqual(
+            result["products"][0]["cross_contamination_info"],
+            "Puede contener trazas de frutos secos.",
+        )
+        self.assertEqual(
+            result["products"][0]["declared_compatible_with"][0],
+            {
+                "id": self.diabetes.pk,
+                "name": "Diabetes",
+                "slug": "diabetes",
+                "description": "Controlar azúcares.",
+            },
+        )
         self.assertAlmostEqual(result["distance_km"], 0.04, delta=0.1)
 
     def test_search_excludes_product_missing_a_requested_declaration(self):
